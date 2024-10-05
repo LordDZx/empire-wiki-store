@@ -182,110 +182,126 @@ export default function Component() {
         </button>
 
         {showCart && (
-          <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-80 flex justify-center items-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 md:p-8 relative">
-              <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-                <X size={24} />
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} w-80 md:w-96 p-6 rounded-lg shadow-md`}>
+              <button onClick={() => setShowCart(false)} className="absolute top-2 right-2">
+                <X size={20} />
               </button>
-              <h2 className="text-xl font-bold mb-4">سلة التسوق</h2>
-              {cart.length === 0 ? (
-                <p>لا توجد عناصر في السلة.</p>
-              ) : (
-                <>
-                  <ul className="mb-4">
-                    {cart.map(item => (
-                      <li key={item.id} className="flex justify-between items-center mb-2">
-                        <span>{item.name} x{item.quantity}</span>
-                        <span>{(item.price * item.quantity).toFixed(2)} جنيه مصري</span>
-                        <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700">
-                          <Trash2 size={16} />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                  <h3 className="text-lg font-bold mb-2">الإجمالي: {getTotalCost()} جنيه مصري</h3>
-                  <div className="mb-4">
-                    <label className="block mb-2">طريقة الدفع:</label>
-                    {paymentMethods.map(method => (
-                      <label key={method.id} className="flex items-center mb-2">
-                        <input
-                          type="radio"
-                          name="payment-method"
-                          value={method.id}
-                          checked={selectedPaymentMethod === method.id}
-                          onChange={() => setSelectedPaymentMethod(method.id)}
-                          className="mr-2"
-                        />
-                        {method.name}
-                      </label>
-                    ))}
-                  </div>
-                  <div className="mb-4">
-                    <label className="block mb-2">اسم المشتري:</label>
-                    <input
-                      type="text"
-                      value={buyerName}
-                      onChange={(e) => setBuyerName(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
-                    />
-                  </div>
-                  <button onClick={sendToWhatsApp} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300 mr-2">
+              <h2 className="text-xl font-semibold mb-4">سلة التسوق</h2>
+              <div className="space-y-2 mb-4">
+                {cart.length === 0 ? (
+                  <p>سلتك فارغة</p>
+                ) : (
+                  cart.map(item => (
+                    <div key={item.id} className="flex justify-between items-center">
+                      <span>{item.name} x{item.quantity}</span>
+                      <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700">
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-bold">الإجمالي: {getTotalCost()} جنيه مصري</span>
+                <button
+                  onClick={clearCart}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition duration-300"
+                >
+                  مسح السلة
+                </button>
+              </div>
+              <div className="mt-4">
+                <h3 className="font-semibold">اختر طريقة الدفع:</h3>
+                <select
+                  value={selectedPaymentMethod}
+                  onChange={e => setSelectedPaymentMethod(e.target.value)}
+                  className="w-full p-2 border rounded"
+                >
+                  <option value="">اختر...</option>
+                  {paymentMethods.map(method => (
+                    <option key={method.id} value={method.id}>{method.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="mt-4">
+                <input
+                  type="text"
+                  placeholder="اسم المشتري"
+                  value={buyerName}
+                  onChange={e => setBuyerName(e.target.value)}
+                  className="w-full p-2 border rounded mb-2"
+                />
+                <div className="flex justify-between">
+                  <button
+                    onClick={sendToWhatsApp}
+                    disabled={cart.length === 0 || !selectedPaymentMethod || !buyerName}
+                    className={`w-full ${cart.length === 0 || !selectedPaymentMethod || !buyerName ? 'bg-gray-300' : 'bg-blue-500'} text-white p-2 rounded hover:bg-blue-600 transition duration-300`}
+                  >
                     إرسال إلى واتساب
                   </button>
-                  <button onClick={downloadInvoice} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
+                  <button
+                    onClick={downloadInvoice}
+                    disabled={cart.length === 0 || !selectedPaymentMethod || !buyerName}
+                    className={`w-full ${cart.length === 0 || !selectedPaymentMethod || !buyerName ? 'bg-gray-300' : 'bg-green-500'} text-white p-2 rounded hover:bg-green-600 transition duration-300 ml-2`}
+                  >
                     تحميل الفاتورة
+                    <Download size={16} className="ml-1" />
                   </button>
-                </>
-              )}
+                </div>
+              </div>
             </div>
           </div>
         )}
 
         <button
           onClick={() => setShowChatbot(!showChatbot)}
-          className="fixed bottom-4 right-4 bg-purple-500 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-purple-600 transition duration-300"
+          className={`fixed bottom-4 right-4 bg-green-500 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-green-600 transition duration-300 ${showCart ? 'hidden' : ''}`}
         >
           <MessageCircle size={24} />
         </button>
 
         {showChatbot && (
-          <div className="fixed bottom-20 right-4 w-80 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg z-50">
-            <div ref={chatRef} className="h-48 overflow-y-auto mb-2">
-              {chatMessages.map((msg, index) => (
-                <div key={index} className="mb-2">
-                  <span className={msg.startsWith("أنت:") ? 'text-blue-500' : 'text-purple-500'}>
-                    {msg}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <form onSubmit={handleChatSubmit} className="flex">
-              <input
-                type="text"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                className="flex-1 p-2 border border-gray-300 rounded-l"
-                placeholder="اكتب رسالتك هنا..."
-              />
-              <button type="submit" className="bg-blue-500 text-white px-3 rounded-r hover:bg-blue-600 transition duration-300">
-                إرسال
+          <div className="fixed top-0 right-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} w-80 md:w-96 p-6 rounded-lg shadow-md`}>
+              <button onClick={() => setShowChatbot(false)} className="absolute top-2 right-2">
+                <X size={20} />
               </button>
-            </form>
+              <h2 className="text-xl font-semibold mb-4">الدردشة</h2>
+              <div className="h-40 overflow-y-auto mb-4" ref={chatRef}>
+                {chatMessages.map((message, index) => (
+                  <p key={index} className="mb-1">{message}</p>
+                ))}
+              </div>
+              <form onSubmit={handleChatSubmit} className="flex">
+                <input
+                  type="text"
+                  value={userInput}
+                  onChange={e => setUserInput(e.target.value)}
+                  placeholder="اكتب هنا..."
+                  className="flex-1 p-2 border rounded mr-2"
+                />
+                <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300">
+                  إرسال
+                </button>
+              </form>
+            </div>
           </div>
         )}
 
-        <footer className="mt-8 text-center">
-          <button onClick={() => setShowContactUs(!showContactUs)} className="text-blue-500 hover:underline">
-            اتصل بنا
-          </button>
-          {showContactUs && (
-            <div className="mt-2 p-4 border border-gray-300 rounded bg-white dark:bg-gray-800">
-              <h3 className="text-lg font-bold mb-2">طرق الاتصال بنا:</h3>
-              <p><Facebook size={18} className="inline-block mr-1" /> صفحتنا على فيسبوك</p>
-              <p><Mail size={18} className="inline-block mr-1" /> البريد الإلكتروني: support@goodgameempire.com</p>
-              <p><Phone size={18} className="inline-block mr-1" /> الهاتف: +20 101 234 5678</p>
-            </div>
-          )}
+        <footer className="text-center mt-8">
+          <p className="text-gray-500">حقوق الطبع والنشر © 2024 متجر Goodgame Empire</p>
+          <div className="flex justify-center mt-2">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="mx-2">
+              <Facebook size={24} />
+            </a>
+            <a href="mailto:example@example.com" className="mx-2">
+              <Mail size={24} />
+            </a>
+            <a href="tel:+201098662418" className="mx-2">
+              <Phone size={24} />
+            </a>
+          </div>
         </footer>
       </div>
     </div>
