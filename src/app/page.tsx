@@ -3,9 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingCart, X, MessageCircle, Download, Sun, Moon, Trash2, Facebook, Mail, Phone, Home } from 'lucide-react';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingCart, X, MessageCircle, Download, Sun, Moon, Trash2, Facebook, Mail, Phone, Home } from 'lucide-react';
-
 type Product = {
   id: number;
   name: string;
@@ -185,154 +182,111 @@ export default function Component() {
         </button>
 
         {showCart && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-            <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg relative">
-              <button
-                onClick={() => setShowCart(false)}
-                className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-              >
+          <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-80 flex justify-center items-center z-50">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 md:p-8 relative">
+              <button onClick={() => setShowCart(false)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
                 <X size={24} />
               </button>
               <h2 className="text-xl font-bold mb-4">سلة التسوق</h2>
               {cart.length === 0 ? (
-                <p className="text-gray-500">لا توجد عناصر في السلة.</p>
+                <p>لا توجد عناصر في السلة.</p>
               ) : (
-                <div>
-                  <ul>
+                <>
+                  <ul className="mb-4">
                     {cart.map(item => (
-                      <li key={item.id} className="flex justify-between mb-2">
+                      <li key={item.id} className="flex justify-between items-center mb-2">
                         <span>{item.name} x{item.quantity}</span>
                         <span>{(item.price * item.quantity).toFixed(2)} جنيه مصري</span>
-                        <button
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-red-500 hover:text-red-700 ml-2"
-                        >
-                          <Trash2 size={18} />
+                        <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700">
+                          <Trash2 size={16} />
                         </button>
                       </li>
                     ))}
                   </ul>
-                  <div className="mt-4">
-                    <strong>الإجمالي: {getTotalCost()} جنيه مصري</strong>
-                  </div>
-                  <div className="mt-4">
-                    <h3 className="text-lg font-bold mb-2">طريقة الدفع</h3>
+                  <h3 className="text-lg font-bold mb-2">الإجمالي: {getTotalCost()} جنيه مصري</h3>
+                  <div className="mb-4">
+                    <label className="block mb-2">طريقة الدفع:</label>
                     {paymentMethods.map(method => (
-                      <label key={method.id} className="block">
+                      <label key={method.id} className="flex items-center mb-2">
                         <input
                           type="radio"
-                          name="paymentMethod"
+                          name="payment-method"
                           value={method.id}
                           checked={selectedPaymentMethod === method.id}
                           onChange={() => setSelectedPaymentMethod(method.id)}
+                          className="mr-2"
                         />
                         {method.name}
                       </label>
                     ))}
                   </div>
-                  <div className="mt-4">
-                    <label className="block mb-1">اسم المشتري:</label>
+                  <div className="mb-4">
+                    <label className="block mb-2">اسم المشتري:</label>
                     <input
                       type="text"
                       value={buyerName}
                       onChange={(e) => setBuyerName(e.target.value)}
-                      className="border rounded p-2 w-full"
-                      placeholder="أدخل اسمك"
+                      className="w-full p-2 border border-gray-300 rounded"
                     />
                   </div>
-                  <button
-                    onClick={sendToWhatsApp}
-                    className="bg-green-500 text-white px-4 py-2 rounded mt-4 hover:bg-green-600 transition duration-300"
-                  >
-                    إرسال إلى WhatsApp
+                  <button onClick={sendToWhatsApp} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300 mr-2">
+                    إرسال إلى واتساب
                   </button>
-                  <button
-                    onClick={downloadInvoice}
-                    className="bg-purple-500 text-white px-4 py-2 rounded mt-4 ml-2 hover:bg-purple-600 transition duration-300"
-                  >
+                  <button onClick={downloadInvoice} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
                     تحميل الفاتورة
                   </button>
-                </div>
+                </>
               )}
-              <button
-                onClick={clearCart}
-                className="bg-red-500 text-white px-4 py-2 rounded mt-4"
-              >
-                مسح السلة
-              </button>
             </div>
           </div>
         )}
 
         <button
-          onClick={() => setShowChatbot(true)}
-          className="fixed bottom-4 right-4 bg-blue-500 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-blue-600 transition duration-300"
+          onClick={() => setShowChatbot(!showChatbot)}
+          className="fixed bottom-4 right-4 bg-purple-500 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-purple-600 transition duration-300"
         >
           <MessageCircle size={24} />
         </button>
 
         {showChatbot && (
-          <div className="fixed bottom-20 right-4 w-80 bg-white p-4 rounded-lg shadow-lg">
-            <button
-              onClick={() => setShowChatbot(false)}
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-            >
-              <X size={24} />
-            </button>
-            <div className="overflow-y-auto h-48" ref={chatRef}>
-              {chatMessages.map((message, index) => (
-                <p key={index} className="mb-2">{message}</p>
+          <div className="fixed bottom-20 right-4 w-80 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg z-50">
+            <div ref={chatRef} className="h-48 overflow-y-auto mb-2">
+              {chatMessages.map((msg, index) => (
+                <div key={index} className="mb-2">
+                  <span className={msg.startsWith("أنت:") ? 'text-blue-500' : 'text-purple-500'}>
+                    {msg}
+                  </span>
+                </div>
               ))}
             </div>
-            <form onSubmit={handleChatSubmit} className="flex mt-2">
+            <form onSubmit={handleChatSubmit} className="flex">
               <input
                 type="text"
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
-                className="border rounded p-2 flex-1"
-                placeholder="اكتب هنا..."
+                className="flex-1 p-2 border border-gray-300 rounded-l"
+                placeholder="اكتب رسالتك هنا..."
               />
-              <button type="submit" className="bg-blue-500 text-white px-4 rounded ml-2">
+              <button type="submit" className="bg-blue-500 text-white px-3 rounded-r hover:bg-blue-600 transition duration-300">
                 إرسال
               </button>
             </form>
           </div>
         )}
 
-        <button
-          onClick={() => setShowContactUs(true)}
-          className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-green-600 transition duration-300"
-        >
-          اتصل بنا
-        </button>
-
-        {showContactUs && (
-          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-75">
-            <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg relative">
-              <button
-                onClick={() => setShowContactUs(false)}
-                className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-              >
-                <X size={24} />
-              </button>
-              <h2 className="text-xl font-bold mb-4">اتصل بنا</h2>
-              <div className="flex flex-col space-y-4">
-                <a href="mailto:example@example.com" className="flex items-center">
-                  <Mail size={24} className="mr-2" />
-                  <span>example@example.com</span>
-                </a>
-                <a href="tel:+201234567890" className="flex items-center">
-                  <Phone size={24} className="mr-2" />
-                  <span>+20 123 456 7890</span>
-                </a>
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                  <Facebook size={24} className="mr-2" />
-                  <span>صفحتنا على فيسبوك</span>
-                </a>
-              </div>
+        <footer className="mt-8 text-center">
+          <button onClick={() => setShowContactUs(!showContactUs)} className="text-blue-500 hover:underline">
+            اتصل بنا
+          </button>
+          {showContactUs && (
+            <div className="mt-2 p-4 border border-gray-300 rounded bg-white dark:bg-gray-800">
+              <h3 className="text-lg font-bold mb-2">طرق الاتصال بنا:</h3>
+              <p><Facebook size={18} className="inline-block mr-1" /> صفحتنا على فيسبوك</p>
+              <p><Mail size={18} className="inline-block mr-1" /> البريد الإلكتروني: support@goodgameempire.com</p>
+              <p><Phone size={18} className="inline-block mr-1" /> الهاتف: +20 101 234 5678</p>
             </div>
-          </div>
-        )}
+          )}
+        </footer>
       </div>
     </div>
   );
