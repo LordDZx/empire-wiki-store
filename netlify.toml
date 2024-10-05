@@ -1,6 +1,8 @@
 [build]
-  command = "npm run build"
   publish = "out"
+  command = "npm run build"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+[[redirects]]
+  from = "/old-path"
+  to = "/new-path"
+  status = 301
