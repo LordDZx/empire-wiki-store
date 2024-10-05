@@ -1,3 +1,4 @@
+'use client'; // هذا السطر يحدد أن هذا مكون عميل
 import React, { useState, useEffect, useRef } from 'react'
 import { ShoppingCart, X, MessageCircle, Download, Sun, Moon, Trash2, Facebook, Mail, Phone, Home } from 'lucide-react'
 
